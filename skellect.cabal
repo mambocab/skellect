@@ -6,6 +6,7 @@ cabal-version:        >= 1.18
 library
     hs-source-dirs:   library
     build-depends:    base
+    ghc-options:      -Wall
     exposed-modules:  Skellect
     default-language: Haskell2010
 
@@ -13,12 +14,14 @@ executable skellect
     hs-source-dirs:   executable
     build-depends:    base, skellect
     main-is:          Main.hs
+    ghc-options:      -Wall
     default-language: Haskell2010
 
 test-suite hlint
     hs-source-dirs:   test-suite
     build-depends:    base, hlint
     main-is:          HLint.hs
+    ghc-options:      -Wall
     type:             exitcode-stdio-1.0
     default-language: Haskell2010
 
@@ -26,6 +29,7 @@ test-suite hspec
     hs-source-dirs:   test-suite
     build-depends:    base, skellect, hspec
     main-is:          Spec.hs
+    ghc-options:      -Wall
     type:             exitcode-stdio-1.0
     default-language: Haskell2010
 
@@ -33,6 +37,7 @@ benchmark criterion
     hs-source-dirs:   benchmark
     build-depends:    base, skellect, criterion
     main-is:          Bench.hs
+    ghc-options:      -Wall
     type:             exitcode-stdio-1.0
     default-language: Haskell2010
 
