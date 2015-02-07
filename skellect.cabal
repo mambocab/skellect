@@ -1,0 +1,11 @@
+name:          skellect
+version:       0.0.0
+build-type:    Simple
+cabal-version: >= 1.18
+
+library
+    default-language: Haskell2010
+    exposed-modules:  Skellect
+    hs-source-dirs:   library
+    build-depends:    base
+
