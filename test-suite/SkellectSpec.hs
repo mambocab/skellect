@@ -5,9 +5,9 @@ import Test.Hspec (describe, it, shouldBe, Spec)
 import Test.Hspec.QuickCheck (prop)
 
 spec :: Spec
-spec = do
+spec =
     describe "skellect" $ do
-        it "returns unit" $ do
+        it "returns unit" $
 	    skellect `shouldBe` ()
 
 	prop "is equal to unit" $
