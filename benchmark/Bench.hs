@@ -1,7 +1,7 @@
 module Main (main) where
 
 import Criterion.Main (bgroup, defaultMain)
-import SkellectBench
+import qualified SkellectBench
 
 main :: IO ()
 main = defaultMain
