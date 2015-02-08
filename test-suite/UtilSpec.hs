@@ -6,8 +6,6 @@ import Test.QuickCheck (property)
 
 validLineSplits :: String -> [String] -> Bool
 validLineSplits "" [] = True
-validLineSplits _  [] = False
-validLineSplits "" _  = False
 validLineSplits ('\n':xs) ys = validLineSplits xs ys
 validLineSplits (x:xs) (y:ys)
     | x == head y = validLineSplits xs (remainingSplit (tail y: ys))
@@ -15,6 +13,8 @@ validLineSplits (x:xs) (y:ys)
         where
             remainingSplit ("":as) = as
             remainingSplit as = as
+validLineSplits _  [] = False
+validLineSplits "" _  = False
 
 spec :: Spec
 spec =
