@@ -7,7 +7,7 @@ library
     hs-source-dirs:   library
     build-depends:    base
     ghc-options:      -Wall
-    exposed-modules:  Skellect
+    exposed-modules:  Skellect.Utils
     default-language: Haskell2010
 
 executable skellect
