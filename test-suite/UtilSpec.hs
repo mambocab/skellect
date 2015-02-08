@@ -1,6 +1,6 @@
 module UtilSpec (spec) where
 
-import Skellect.Utils (nonEmptyLines)
+import Skellect.Utils (headMay, nonEmptyLines)
 import Test.Hspec (describe, it, shouldBe, Spec)
 import Test.QuickCheck (property)
 
@@ -17,7 +17,7 @@ validLineSplits _  [] = False
 validLineSplits "" _  = False
 
 spec :: Spec
-spec =
+spec = do
     describe "nonEmptyLines" $ do
         it "splits great-newline-pancakes into [\"great\",\"pancakes\"]" $
             nonEmptyLines "great\npancakes" `shouldBe` ["great","pancakes"]
@@ -31,4 +31,16 @@ spec =
             \s -> "" `notElem` nonEmptyLines s
         it "always provides a valid split" $ property $
             \s -> validLineSplits s (nonEmptyLines s)
+
+    describe "headMay" $ do
+        it "returns Nothing for empty lists" $
+            headMay [] `shouldBe` (Nothing :: Maybe Char)
+        it "returns Just the first element of a list" $
+            headMay [5, 2, 9] `shouldBe` (Just 5 :: Maybe Integer)
+        it "works on infinite lists" $
+            headMay [4..] `shouldBe` (Just 4 :: Maybe Integer)
+        it "works on singleton lists" $ property $
+            \x -> headMay [x] == (Just x :: Maybe Integer)
+        it "works on arbitrary lists" $ property $
+            \x xs -> headMay (x:xs) == (Just x :: Maybe Float)
 
