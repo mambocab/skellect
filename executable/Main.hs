@@ -1,7 +1,9 @@
 module Main (main) where
 
-import Skellect (skellect)
+import Skellect.Utils (nonEmptyLines)
 
 main :: IO ()
-main = print skellect
+main = do
+    choicesInput <- getContents
+    putStrLn $ unlines $ nonEmptyLines choicesInput
 
