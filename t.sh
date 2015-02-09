@@ -1,1 +1,1 @@
-cabal test --show-details=always --test-option=--color
+cabal build && cabal exec -- runhaskell test-suite/HLint.hs && cabal exec -- runhaskell -ilibrary -itest-suite test-suite/Spec.hs
