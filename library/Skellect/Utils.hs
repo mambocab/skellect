@@ -5,5 +5,4 @@ headMay []    = Nothing
 headMay (x:_) = Just x
 
 nonEmptyLines :: String -> [String]
-nonEmptyLines = filter (not . null) . lines 
-
+nonEmptyLines = filter (not . null) . lines
