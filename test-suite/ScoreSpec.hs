@@ -41,6 +41,12 @@ spec = do
         it "scores shorter matches higher" $
             score "select" "select..." `shouldSatisfy`
                 (> score "select" "select......")
+        it "scores a longish string correctly" $
+            score "ulb" "/usr/local/bin/selecta" `shouldBe`
+                3 / 11 / 22
+        it "scores a longish string with multiple matches correctly" $
+            score "ulb" "/usr/local/bin/selecta-beta" `shouldBe`
+                3 / 11 / 27
     describe "shortestMatchLength" $ do
         prop "returns Just 0 on empty queries" $
             \x -> shortestMatchLength "" x `shouldBe` Just 0
