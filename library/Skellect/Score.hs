@@ -1,7 +1,18 @@
-module Skellect.Score (matchLength, suffixesStartingWith) where
+module Skellect.Score (matchLength
+                      ,shortestMatchLength
+                      ,suffixesStartingWith) where
 
 import Data.List (tails)
+import Data.Maybe (mapMaybe)
 import Control.Applicative ((<$>))
+
+shortestMatchLength :: Eq a => [a] -> [a] -> Maybe Integer
+shortestMatchLength []          _      = Just 0
+shortestMatchLength query@(q:_) choice =
+    let matchQuery = matchLength query
+        candidates = suffixesStartingWith q choice
+        lengths = mapMaybe matchQuery candidates
+    in if null lengths then Nothing else Just (minimum lengths)
 
 matchLength :: Eq a => [a] -> [a] -> Maybe Integer
 matchLength [] _ = Just 0

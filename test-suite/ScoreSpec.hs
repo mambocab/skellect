@@ -1,6 +1,8 @@
 module ScoreSpec (spec) where
 
-import Skellect.Score (matchLength, suffixesStartingWith)
+import Skellect.Score (matchLength
+                      ,shortestMatchLength
+                      ,suffixesStartingWith)
 import Test.Hspec (describe, it, shouldBe, shouldSatisfy, Spec)
 import Test.Hspec.QuickCheck (prop)
 import Data.List ((\\))
@@ -9,6 +11,13 @@ import Data.List ((\\))
 
 spec :: Spec
 spec = do
+    describe "shortestMatchLength" $ do
+        prop "returns Just 0 on empty queries" $
+            \x -> shortestMatchLength "" x `shouldBe` Just 0
+        it "returns Just 2 for \"aa\" and \"aardvark\"" $
+            shortestMatchLength "aa" "aardvark" `shouldBe` Just 2
+        it "returns Nothing if there isn't a match" $
+            shortestMatchLength "ab" "anathema" `shouldBe` Nothing
     describe "matchLength" $ do
         prop "returns 0 if the query is empty" $
             \x -> matchLength "" x `shouldBe` Just 0
