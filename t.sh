@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
-set -e # log each command before execution
-set -x # fail fast
 
-cabal build >/dev/null # build, showing errors but not regular output
-cabal exec -- runhaskell test-suite/HLint.hs # lint
-cabal exec -- runhaskell -ilibrary -itest-suite test-suite/Spec.hs # test!
+# fail fast if any command dies with an error
+set -e
+# debug output: print each command before printing
+set -x
 
+# build, silencing normal output but allowing errors
+cabal build >/dev/null
+# lint
+cabal exec -- runhaskell test-suite/HLint.hs
+# test
+cabal exec -- runhaskell -ilibrary -itest-suite test-suite/Spec.hs

@@ -8,6 +8,7 @@ library
     build-depends:    base
     ghc-options:      -Wall
     exposed-modules:  Skellect.Utils
+                      Skellect.Score
     default-language: Haskell2010
 
 executable skellect
