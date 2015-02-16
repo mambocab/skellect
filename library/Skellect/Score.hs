@@ -23,7 +23,9 @@ shortestMatchLength query@(q:_) choice =
     let matchQuery = matchLength query
         candidates = suffixesStartingWith q choice
         lengths = mapMaybe matchQuery candidates
-    in if null lengths then Nothing else Just (minimum lengths)
+    in case lengths of
+        [] -> Nothing
+        xs -> Just (minimum xs)
 
 matchLength :: Eq a => [a] -> [a] -> Maybe Integer
 matchLength [] _ = Just 0
