@@ -1,16 +1,46 @@
 module ScoreSpec (spec) where
 
 import Skellect.Score (matchLength
+                      ,score
                       ,shortestMatchLength
                       ,suffixesStartingWith)
 import Test.Hspec (describe, it, shouldBe, shouldSatisfy, Spec)
 import Test.Hspec.QuickCheck (prop)
-import Data.List ((\\))
+import Test.QuickCheck ((==>))
+import Data.List (genericLength, (\\))
 
 {-# ANN module "HLint: ignore Redundant do" #-}
 
 spec :: Spec
 spec = do
+    describe "score" $ do
+        it "returns 1 for empty queries" $
+            score "" "some string" `shouldBe` 1
+        it "returns 0 for empty choices" $
+            score "a query" "" `shouldBe` 0
+        it "returns 0 for a non-matching string" $
+            score "haha" "avocado" `shouldBe` 0
+        it "returns 0 for a partial match" $
+            score "ab" "and" `shouldBe` 0
+        it "ignores case for query" $
+            score "aA" "aa" `shouldBe` score "aa" "aa"
+        it "ignores case for choice" $
+            score "aa" "Aa" `shouldBe` score "aa" "aa"
+        it "scores above 0 for correct matches" $
+            [score "a" "a"
+            ,score "a" "aa"
+            ,score "ba" "banana"
+            ,score "ubs" "/usr/bin/selecta"
+            ] `shouldSatisfy` all (>0)
+        prop "scores as high as possible when query = choice" $
+            \x -> not (null x) ==>
+                score x x `shouldBe` 1 / genericLength x
+        it "scores better matches higher" $
+            score "asp" "asp.." `shouldSatisfy`
+                (> score "asp" "a.s.p")
+        it "scores shorter matches higher" $
+            score "select" "select..." `shouldSatisfy`
+                (> score "select" "select......")
     describe "shortestMatchLength" $ do
         prop "returns Just 0 on empty queries" $
             \x -> shortestMatchLength "" x `shouldBe` Just 0

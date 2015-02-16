@@ -1,10 +1,21 @@
 module Skellect.Score (matchLength
+                      ,score
                       ,shortestMatchLength
                       ,suffixesStartingWith) where
-
-import Data.List (tails)
+import Skellect.Utils (lower)
+import Data.List (genericLength, tails)
 import Data.Maybe (mapMaybe)
 import Control.Applicative ((<$>))
+
+score :: String -> String -> Rational
+score ""    _      = 1
+score _     ""     = 0
+score query choice =
+    let match = shortestMatchLength (lower query) (lower choice)
+    in case match of
+        Nothing -> 0
+        Just x  ->
+            genericLength query / fromIntegral x / genericLength choice
 
 shortestMatchLength :: Eq a => [a] -> [a] -> Maybe Integer
 shortestMatchLength []          _      = Just 0
