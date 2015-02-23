@@ -9,6 +9,7 @@ library
     ghc-options:      -Wall
     exposed-modules:  Skellect.Utils
                       Skellect.Score
+                      Skellect.SelectionList
     default-language: Haskell2010
 
 executable skellect
