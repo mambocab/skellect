@@ -5,11 +5,11 @@ cabal-version:        >= 1.18
 
 library
     hs-source-dirs:   library
-    build-depends:    base
+    build-depends:    base, containers
     ghc-options:      -Wall
     exposed-modules:  Skellect.Utils
                       Skellect.Score
-                      Skellect.SelectionList
+                      Skellect.SelectionSeq
     default-language: Haskell2010
 
 executable skellect
@@ -29,7 +29,7 @@ test-suite hlint
 
 test-suite hspec
     hs-source-dirs:   test-suite
-    build-depends:    base, skellect, hspec, QuickCheck
+    build-depends:    base, containers, skellect, hspec, QuickCheck
     main-is:          Spec.hs
     ghc-options:      -Wall
     type:             exitcode-stdio-1.0
