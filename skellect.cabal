@@ -9,7 +9,7 @@ library
     ghc-options:      -Wall
     exposed-modules:  Skellect.Utils
                       Skellect.Score
-                      Skellect.SelectionSeq
+                      Skellect.ListZipper
     default-language: Haskell2010
 
 executable skellect
