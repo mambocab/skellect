@@ -1,15 +1,23 @@
-module Skellect.ListZipper (ListZipper(..)
-                           ,fromList
-                           ,fromLists
-                           ,toList
-                           ,next
-                           ,prev) where
+module Skellect.ListZipper (ListZipper
+                           ,before, selection, after
+                           ,empty ,fromList, fromLists ,toList
+                           ,next, prev) where
 
-data ListZipper a =
-    ListZipper {before    :: [a]
-               ,selection ::  a
-               ,after     :: [a]} |
-    EmptyListZipper deriving (Show, Eq)
+data ListZipper a = ListZipper [a] a [a] | EmptyListZipper
+    deriving (Show, Eq)
+
+selection :: ListZipper a -> Maybe a
+selection (ListZipper _ s _) = Just s
+selection EmptyListZipper    = Nothing
+
+before, after :: ListZipper a -> [a]
+before (ListZipper b _ _) = reverse b
+before EmptyListZipper    = []
+after  (ListZipper _ _ a) = a
+after  EmptyListZipper    = []
+
+empty :: ListZipper a
+empty =  EmptyListZipper
 
 fromList :: [a] -> ListZipper a
 fromList []     = EmptyListZipper
