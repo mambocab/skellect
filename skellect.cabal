@@ -10,6 +10,7 @@ library
     exposed-modules:  Skellect.Utils
                       Skellect.Score
                       Skellect.ListZipper
+                      Skellect.AppState
     default-language: Haskell2010
 
 executable skellect
