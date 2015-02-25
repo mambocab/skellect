@@ -1,6 +1,6 @@
 module Skellect.AppState (AppState(..)
                          ,startState
-                         ,selection
+                         ,selection, before, after
                          ,sortedMatches
                          ,newQuery
                          ,Command(..)
@@ -9,7 +9,7 @@ module Skellect.AppState (AppState(..)
 
 import qualified Skellect.ListZipper as LZ (ListZipper
                                            ,fromList
-                                           ,selection
+                                           ,selection, before, after
                                            ,next, prev)
 import Skellect.Score (score)
 
@@ -47,6 +47,10 @@ defaultPrompt = ">"
 
 startStateWithPrompt :: String -> [String] -> AppState
 startStateWithPrompt p cs = AppState (AppData p cs) (LZ.fromList cs) ""
+
+before, after :: AppState -> [String]
+before = LZ.before . matches
+after  = LZ.after  . matches
 
 selection :: AppState -> Maybe String
 selection = LZ.selection . matches
