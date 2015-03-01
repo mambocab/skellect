@@ -15,7 +15,7 @@ library
 
 executable skellect
     hs-source-dirs:   executable
-    build-depends:    base, skellect, ansi-terminal
+    build-depends:    base, skellect, ansi-terminal, containers
     main-is:          Main.hs
     ghc-options:      -Wall
     default-language: Haskell2010
