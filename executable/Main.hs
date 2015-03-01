@@ -5,7 +5,7 @@ import Skellect.AppState
 import Prelude hiding (lookup)
 import System.Console.ANSI
 import System.IO
-import Data.Map.Strict (findWithDefault, fromList)
+import Data.Map.Strict (Map, findWithDefault, fromList)
 import System.Exit
 import Control.Monad (replicateM_)
 
@@ -21,15 +21,6 @@ main = do
     hCursorUp tty viewHeight
     loop tty viewHeight initState
 
-commandMap = fromList [('\^N', MoveDown)
-                      ,('\^P', MoveUp)
-                      ,('\^H', DeleteChar)
-                      ,('\^W', DeleteWord)
-                      ,('\^U', DeleteQuery)
-                      ]
-
-charToCommand c = findWithDefault (AppendChar c) c commandMap
-
 loop :: Handle -> Int -> AppState -> IO ()
 loop tty viewHeight state = do
     hPutSelectionState tty state viewHeight
@@ -39,6 +30,17 @@ loop tty viewHeight state = do
         '\^C' -> endLoopAndPut Nothing
         '\n'  -> endLoopAndPut $ selection state
         _     -> loop tty viewHeight $ run (charToCommand nextChar) state
+
+commandMap :: Map Char Command
+commandMap = fromList [('\^N', MoveDown)
+                      ,('\^P', MoveUp)
+                      ,('\^H', DeleteChar)
+                      ,('\^W', DeleteWord)
+                      ,('\^U', DeleteQuery)
+                      ]
+
+charToCommand :: Char -> Command
+charToCommand c = findWithDefault (AppendChar c) c commandMap
 
 endLoopAndPut :: Maybe String -> IO ()
 endLoopAndPut Nothing  = exitFailure
@@ -66,7 +68,8 @@ hPutSelectionState tty state viewHeight = do
     hCursorForward tty $ promptLineLength state
 
 promptLineLength :: AppState -> Int
-promptLineLength state = (+1) $ sum $ map length [prompt state, query state]
+promptLineLength state = (+1) $ sum lengths
+    where lengths = map (length . ($state)) [prompt, query]
 
 hPutSelection :: Handle -> AppState -> IO ()
 hPutSelection tty as = case selection as of
