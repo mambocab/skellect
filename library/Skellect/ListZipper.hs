@@ -1,5 +1,5 @@
 module Skellect.ListZipper (ListZipper
-                           ,before, selection, after
+                           ,before, selection, after, size
                            ,empty ,fromList, fromLists ,toList
                            ,next, prev) where
 
@@ -18,6 +18,10 @@ after  EmptyListZipper    = []
 
 empty :: ListZipper a
 empty =  EmptyListZipper
+
+size :: ListZipper a -> Int
+size EmptyListZipper = 0
+size lz              = (+1) $ sum $ map length [before lz, after lz]
 
 fromList :: [a] -> ListZipper a
 fromList []     = EmptyListZipper

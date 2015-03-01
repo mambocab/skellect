@@ -34,14 +34,15 @@ loop :: Handle -> Int -> AppState -> IO ()
 loop tty viewHeight state = do
     hPutSelectionState tty state viewHeight
     nextChar <- hGetChar tty
+    hClearLines tty viewHeight
     case nextChar of
-        '\^C' -> hClearLines tty viewHeight >> exitFailure
-        '\n'  -> let sel = selection state in case sel of
-            Nothing -> exitFailure
-            Just s  -> putStrLn s >> exitSuccess
+        '\^C' -> endLoopAndPut Nothing
+        '\n'  -> endLoopAndPut $ selection state
         _     -> loop tty viewHeight $ run (charToCommand nextChar) state
 
-
+endLoopAndPut :: Maybe String -> IO ()
+endLoopAndPut Nothing  = exitFailure
+endLoopAndPut (Just s) = putStrLn s >> exitSuccess
 
 hClearLines :: Handle -> Int -> IO ()
 hClearLines tty height = do
