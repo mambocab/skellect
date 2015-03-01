@@ -1,11 +1,12 @@
 module Skellect.AppState (AppState(..)
                          ,startState
-                         ,selection, before, after
+                         ,selection
                          ,sortedMatches
                          ,newQuery
                          ,Command(..)
                          ,run
-                         ,query) where
+                         ,before, after
+                         ,prompt, query) where
 
 import qualified Skellect.ListZipper as LZ (ListZipper
                                            ,fromList
@@ -16,9 +17,13 @@ import Skellect.Score (score)
 import Data.List (sortBy)
 import Data.Ord (comparing)
 
-data AppState = AppState AppData (LZ.ListZipper String) String
+data AppState = AppState {appData :: AppData
+                         ,windowSize :: Int
+                         ,matches :: LZ.ListZipper String
+                         ,query :: String
+                         }
 
-data AppData = AppData {prompt  ::  String
+data AppData = AppData {appDataPrompt  ::  String
                        ,choices :: [String]}
 
 data Command = AppendChar Char
@@ -27,41 +32,46 @@ data Command = AppendChar Char
 
 run :: Command -> AppState -> AppState
 run (AppendChar c) as = newQuery as $ query as ++ [c]
-run DeleteChar as = newQuery as $ init . query $ as
-run DeleteWord as = newQuery as $ (unwords . init . words . query) as
+run DeleteChar as = let q = query as in
+    case q of
+        "" -> as
+        _  -> newQuery as $ init . query $ as
+run DeleteWord as = let q = query as in
+    case q of
+        "" -> as
+        _  -> newQuery as $ (unwords . init . words . query) as
 run DeleteQuery as = newQuery as ""
-run MoveUp   (AppState ad ms q) = AppState ad (LZ.prev ms) q
-run MoveDown (AppState ad ms q) = AppState ad (LZ.next ms) q
+run MoveUp   as@(AppState _ _ ms _) = as { matches = LZ.prev ms }
+run MoveDown as@(AppState _ _ ms _) = as { matches = LZ.next ms }
 
-matches :: AppState -> LZ.ListZipper String
-matches (AppState _ m _) = m
-
-query :: AppState -> String
-query (AppState _ _ q) = q
+prompt = appDataPrompt . appData
 
 startState :: [String] -> AppState
-startState = startStateWithPrompt defaultPrompt
+startState cs = startStateWithPrompt defaultPrompt (min maxHeight (length cs)) cs
 
 defaultPrompt :: String
 defaultPrompt = ">"
 
-startStateWithPrompt :: String -> [String] -> AppState
-startStateWithPrompt p cs = AppState (AppData p cs) (LZ.fromList cs) ""
+maxHeight :: Int
+maxHeight = 20
+
+startStateWithPrompt :: String -> Int -> [String] -> AppState
+startStateWithPrompt p ws cs = AppState (AppData p cs) ws (LZ.fromList $ take ws cs) ""
 
 before, after :: AppState -> [String]
 before = LZ.before . matches
-after  = LZ.after  . matches
+after  = LZ.after . matches
 
 selection :: AppState -> Maybe String
 selection = LZ.selection . matches
 
-appStateWithQuery :: AppData -> String -> AppState
-appStateWithQuery ad@(AppData _ cs) q =
-    AppState ad (LZ.fromList $ sortedMatches cs q) q
+appStateWithQuery :: AppData -> Int -> String -> AppState
+appStateWithQuery ad@(AppData _ cs) ws q =
+    AppState ad ws (LZ.fromList $ take ws $ sortedMatches cs q) q
 
 newQuery :: AppState -> String -> AppState
-newQuery (AppState ad _ _) =
-    appStateWithQuery ad
+newQuery (AppState ad ws _ _) =
+    appStateWithQuery ad ws
 
 sortedMatches :: [String] -> String -> [String]
 sortedMatches cs q = map fst sortedDescending
